@@ -13,5 +13,7 @@ char* strcat(char *destination, const char *source){
         p[ptr++] = source[temp++];
     }
 
-    return p;
+    destination = &p;
+
+    return destination;
 }

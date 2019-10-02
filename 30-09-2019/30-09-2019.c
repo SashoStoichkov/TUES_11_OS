@@ -26,7 +26,10 @@ char* my_strcat(char *destination, const char *source){
         p[ptr++] = source[temp++];
     }
 
-    return p;
+    destination = p;
+    
+
+    return destination;
 }
 
 // void swap(int *a, int *b){
@@ -60,11 +63,11 @@ char* my_strcat(char *destination, const char *source){
 int main(){
 
     char *name = "Pesho";
-    // char l_name[50] = " Goshev";
+    char *l_name = " Goshev";
 
     // printf("%d\n", my_strlen(name));
 
-    // printf("%s\n", my_strcat(name, l_name));
+    printf("%s\n", my_strcat(name, l_name));
 
     // int a = 5;
     // int b = 6;
@@ -73,7 +76,7 @@ int main(){
 
     // printf("%d %d\n", a, b);
 
-    printf("%p\n", my_strdup(name));
+    // printf("%p\n", my_strdup(name));
 
     return 0;
 }
