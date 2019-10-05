@@ -51,35 +51,32 @@ typedef struct {
 } stack;
 
 void stack_init(stack *s, int cap){
-    s = (stack *) malloc (sizeof(stack *));
     s->size = 0;
     s->capacity = cap;
-    s->elements = (int *) malloc (sizeof(int) * cap);
+    s->elements = NULL;
 }
 
 void stack_destroy(stack *s){
-    free(s);
+    free(s->elements);
+    s->size = 0;
 }
 
 int stack_empty(stack *s){
-    if (s->size == 0) return 1;
+    if (s->size <= 0) return 1;
     return 0;
 }
 
 void stack_push(stack *s, int num){
-    if (!stack_empty(s)){
-        s->elements[s->size++] = num;
-    }
+    s->elements = (int *) realloc (s->elements, (sizeof(int) * (++s->size)));
+    s->elements[s->size-1] = num;
 }
 
 int stack_top(stack *s){
-    return s->elements[s->size];
+    return s->elements[s->size-1];
 }
 
 void stack_pop(stack *s){
-    if (stack_empty(s)){
-        s->elements[s->size--] = NULL;
-    }
+    s->elements = (int *) realloc (s->elements, sizeof(int) * (--s->size));
 }
 
 int main(){
@@ -100,19 +97,22 @@ int main(){
 
     // printf("%p\n", my_strdup(name));
 
-    stack *s;
-    stack_init(s, 10);
+    stack s;
+    stack_init(&s, 25);
 
-    for (int i = 0; i < s->capacity; i++){
-        stack_push(s, i+1);
-        printf("Top: %d\n", stack_top(s));
+    for (int i = 0; i <= s.capacity; i++){
+        stack_push(&s, i);
+        printf("Top: %d\n", stack_top(&s));
     }
 
-    for (int i = 0; i < s->size; i++){
-        stack_pop(s);
+    printf("Pop:\n");
+
+    for (int i = 0; i <= s.capacity; i++){
+        printf("Top: %d\n", stack_top(&s));
+        stack_pop(&s);
     }
 
-    stack_destroy(s);
+    stack_destroy(&s);
 
     return 0;
 }
