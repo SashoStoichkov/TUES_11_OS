@@ -11,7 +11,8 @@ int main(int argc, char *argv[]){
     for (int i = 1; i < argc; i++){
 
         char file_name[100];
-        strcpy(file_name, "==> ");
+        if (i == 1) strcpy(file_name, "==> ");
+        else strcpy(file_name, "\n==> ");
         strcat(strcat(file_name, argv[i]), " <==\n");
 
         write(STDOUT_FILENO, file_name, strlen(file_name));
@@ -34,7 +35,7 @@ int main(int argc, char *argv[]){
             }
         }
 
-        write(STDOUT_FILENO, "\n", 1);
+        // write(STDOUT_FILENO, "\n", 1);
 
         close(file);
     }
