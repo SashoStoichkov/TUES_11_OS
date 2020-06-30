@@ -7,46 +7,48 @@
 
 #define NUM_OF_BUYERS 20
 
-pthread_mutex_t car1;
-pthread_mutex_t car2;
-pthread_mutex_t car3;
-pthread_mutex_t car4;
-pthread_mutex_t car5;
+pthread_mutex_t cars_mutex[5];
+int cars[5] = {1, 1, 1, 1, 1}; // all cars are free
 
 void* buyer(void* index) {
 
+    for (int i = 0; i < 5; i++) {
+        if (cars[i] == 1) {
+
+            if (pthread_mutex_trylock(&cars_mutex[i]) == 0) {
+
+                cars[i] = 0;
+                printf("Buyer %ld takes car %d.\n", (long)index, i);
+
+                if (pthread_mutex_unlock(&cars_mutex[i]) == -1) {
+                    perror("pthread_mutex_unlock");
+                }
+
+                printf("Buyer %ld returns car %d.\n", (long)index, i);
+                cars[i] = 1;
+
+                return NULL;
+            } else {
+                printf("Locked\n");
+            }
+        }
+    }
+
+    return NULL;
 }
 
 int main() {
-    if (pthread_mutex_init(&car1, NULL) != 0) {
-        perror("pthread_mutex_init");
-        return 1;
-    }
-
-    if (pthread_mutex_init(&car2, NULL) != 0) {
-        perror("pthread_mutex_init");
-        return 1;
-    }
-
-    if (pthread_mutex_init(&car3, NULL) != 0) {
-        perror("pthread_mutex_init");
-        return 1;
-    }
-
-    if (pthread_mutex_init(&car4, NULL) != 0) {
-        perror("pthread_mutex_init");
-        return 1;
-    }
-
-    if (pthread_mutex_init(&car5, NULL) != 0) {
-        perror("pthread_mutex_init");
-        return 1;
+    for (int i = 0; i < 5; i++){
+        if (pthread_mutex_init(&cars_mutex[i], NULL) != 0) {
+            perror("pthread_mutex_init");
+            return 1;
+        }
     }
 
     pthread_t buyers[NUM_OF_BUYERS];
 
     for (long i = 0; i < NUM_OF_BUYERS; i++){
-        if (pthread_create(&buyers[i], NULL, buyer, (void *)(i+1)) == -1){
+        if (pthread_create(&buyers[i], NULL, buyer, (void *)(i)) == -1){
             perror("pthread_create");
             return 2;
         }
